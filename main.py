@@ -6,6 +6,7 @@ from openai import OpenAI
 import functions
 import json
 import time
+import schedule
 
 required_version = version.parse("1.1.1")
 current_version = version.parse(openai.__version__)
@@ -34,16 +35,11 @@ class Her:
         self.thread_id = thread.id
         return self.thread_id
     
-    def chat(self, user_input):
+    def chat(self):
         if self.thread_id is None:
             raise ValueError("Thread ID is not set. Call start_conversation first.")
         
-        print(f"Received message: {user_input} for thread ID: {self.thread_id}")
-        
-        # Add the user's message to the thread
-        self.client.beta.threads.messages.create(thread_id=self.thread_id,
-                                                role="user",
-                                                content=user_input)
+        print(f"Starting chat for thread ID: {self.thread_id}")
         
         # Run the assistant
         run = self.client.beta.threads.runs.create(thread_id=self.thread_id,
@@ -80,17 +76,19 @@ class Her:
         print(f"Assistant response: {response}")
         return response
     
-    def handle_message(self, user_input):
+    def handle_message(self):
         if self.thread_id is None:
             self.start_conversation()
         
-        response = self.chat(user_input)
+        response = self.chat()
         return response
-         
     
+    def run_periodically(self):
+        schedule.every(3).seconds.do(self.handle_message)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
 if __name__ == '__main__':
     bot = Her()
-
-    while True:
-        msg = input('User: ')
-        print(f'BOT: {bot.handle_message(msg)}')
+    bot.run_periodically()
