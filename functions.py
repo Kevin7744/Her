@@ -2,6 +2,7 @@ from openai import OpenAI
 import json
 import datetime
 from prompts import assistant_instructions
+import os
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -13,6 +14,7 @@ def current_date_time():
     current_datetime = datetime.datetime.now()
     return f"The current date and time is: {current_datetime.strftime('%d/%m/%Y %H:%M')}"
 
+# todo: I will add a function later that calls an  outboud calling agent API 
 # def call_outbound_agent():
     
 
@@ -27,11 +29,10 @@ def create_assistant(client):
             print("Loaded existing assistant ID.")
     else: 
         # If no assistant.json is present, create a new assistant using
-        file = client.files.create(file=open("cleaning.md", "rb"), purpose='assistants')
+        file = client.files.create(file=open("file.md", "rb"), purpose='assistants')
         # file_site_data = client.files.create(file=open('site_data.txt', 'rb'), purpose='assistants')
 
         assistant = client.beta.assistants.create(
-            # Getting assistant prompt from "prompts.py" file, edit on left panel if you want to change the prompt
             instructions=assistant_instructions,
             model="gpt-3.5-turbo-0125",
             tools=[
@@ -44,32 +45,6 @@ def create_assistant(client):
                         "parameters": {}
                     }
                 }, 
-                {
-                    "type": "function",
-                    "function": {
-                        "name": "create_invoice",  # This adds the create invoices function as a tool
-                        "description": "Function to create a new invoice",
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "business_name": {
-                                    "type": "string",
-                                    "description": "The name of the business"
-                                },
-                                "phone_number": {
-                                    "type": "string",
-                                    "description": "The phone number of the business"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "description": "The email of the business"
-                                }
-                            },
-                            "required": ["business_name"]
-                        }
-                    }
-                },
-
             ],
             file_ids=[file.id])
 
