@@ -26,10 +26,11 @@ def current_date_time():
     return f"The current date and time is: {current_datetime.strftime('%d/%m/%Y %H:%M')}"
 
 
-# Get transcript from supabase using phone number
-def get_transcript(phone_number: str) -> str:
-  transcript = supabase.table("transcripts").select("transcript").eq("phone_number", phone_number).execute()
-  return transcript
+# Get all transcripts from supabase
+def get_transcripts() -> list[dict]:
+    response = supabase.table("transcripts").select("*").execute()
+    return response.get("data", [])
+
 
 # Function to get agent name and type
 def get_agent_name_and_type():
@@ -85,18 +86,9 @@ def create_assistant(client):
                 {
                     "type": "function",
                     "function": {
-                        "name": "get_transcript",
-                        "description": "Get transcript from supabase using phone number",
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "phone_number": {
-                                    "type": "string",
-                                    "description": "The phone number to search for in the 'transcripts' table"
-                                }
-                            },
-                            "required": ["phone_number"]
-                        }
+                        "name": "get_transcripts",
+                        "description": "Get all call transcripts from the 'transcripts' table",
+                        "parameters": {},
                     }
                 },
                 {
