@@ -22,7 +22,7 @@ To get started with Her, follow these steps:
 
 ## Usage
 
-Once Her is running, ,eave it to make its own decisions
+Once Her is running, leave it to make its own decisions
 
 
 ## License
