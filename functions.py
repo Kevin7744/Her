@@ -3,8 +3,12 @@ import json
 import datetime
 from prompts import assistant_instructions
 import os
+from supabase import create_client
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+SUPABASE_URL = os.environ("SUPABASE_URL")
+SUPABASE_KEY = os.environ("SUPABASE_SERVICE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Function to know the current date and time
 def current_date_time():
@@ -16,7 +20,13 @@ def current_date_time():
 
 # todo: I will add a function later that calls an outbound calling agent API 
 # def call_outbound_agent():
-    
+
+# Get transcript from supabase using phone number
+def get_transcript(phone_number: str) -> str:
+  transcript = supabase.table("transcripts").select("transcript").eq("phone_number", phone_number).execute()
+  return transcript
+
+
 
 def create_assistant(client):
     assistant_file_path = 'assistant.json'
