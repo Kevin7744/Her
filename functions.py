@@ -133,21 +133,7 @@ def create_assistant(client):
                     "function": {
                         "name": "get_agent_name_and_type",
                         "description": "Function to randomly select an agent name and type",
-                        "parameters": {},
-                        "returns": {
-                            "type": "tuple",
-                            "description": "A tuple containing the selected agent name and type",
-                            "items": [
-                                {
-                                    "type": "string",
-                                    "description": "The selected agent name"
-                                },
-                                {
-                                    "type": "string",
-                                    "description": "The selected agent type"
-                                }
-                            ]
-                        }
+                        "parameters": {}
                     }
                 }
             ],
