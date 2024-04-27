@@ -97,7 +97,7 @@ class Her:
         return response
     
     def run_periodically(self):
-        schedule.every(3).seconds.do(self.handle_message)
+        schedule.every(10).seconds.do(self.handle_message)
         while True:
             schedule.run_pending()
             time.sleep(1)
