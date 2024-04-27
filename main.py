@@ -8,6 +8,8 @@ import json
 import time
 import schedule
 
+load_dotenv()
+
 required_version = version.parse("1.1.1")
 current_version = version.parse(openai.__version__)
 

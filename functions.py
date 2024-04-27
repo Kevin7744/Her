@@ -6,10 +6,15 @@ import requests
 import random
 import os
 from prompts import assistant_instructions
+from dotenv import load_dotenv
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-SUPABASE_URL = os.environ("SUPABASE_URL")
-SUPABASE_KEY = os.environ("SUPABASE_SERVICE_KEY")
+load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Function to know the current date and time
@@ -72,7 +77,7 @@ def create_assistant(client):
                 {
                     "type": "function",
                     "function": {
-                        "name": "current_date_time", # This adds the current date and time function as a tool
+                        "name": "current_date_time",
                         "description": "Function to get the current date and time",
                         "parameters": {}
                     }
@@ -83,10 +88,14 @@ def create_assistant(client):
                         "name": "get_transcript",
                         "description": "Get transcript from supabase using phone number",
                         "parameters": {
-                            "phone_number": {
-                                "type": "string",
-                                "description": "The phone number to search for in the 'transcripts' table"
-                            }
+                            "type": "object",
+                            "properties": {
+                                "phone_number": {
+                                    "type": "string",
+                                    "description": "The phone number to search for in the 'transcripts' table"
+                                }
+                            },
+                            "required": ["phone_number"]
                         }
                     }
                 },
