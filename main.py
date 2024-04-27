@@ -100,7 +100,7 @@ class Her:
         schedule.every(10).seconds.do(self.handle_message)
         while True:
             schedule.run_pending()
-            time.sleep(1)
+            time.sleep(5)
 
 if __name__ == '__main__':
     bot = Her()
