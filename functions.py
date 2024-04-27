@@ -105,22 +105,26 @@ def create_assistant(client):
                         "name": "make_outbound_call",
                         "description": "Function to make an outbound call",
                         "parameters": {
-                            "phone_number": {
-                                "type": "string",
-                                "description": "The phone number to call"
+                            "type": "object",
+                            "properties": {
+                                "phone_number": {
+                                    "type": "string",
+                                    "description": "The phone number to call"
+                                },
+                                "agent_type": {
+                                    "type": "string",
+                                    "description": "The type of agent to use for the call"
+                                },
+                                "agent_name": {
+                                    "type": "string",
+                                    "description": "The name of the agent"
+                                },
+                                "prompt_preamble": {
+                                    "type": "string",
+                                    "description": "The preamble for the call prompt"
+                                }
                             },
-                            "agent_type": {
-                                "type": "string",
-                                "description": "The type of agent to use for the call"
-                            },
-                            "agent_name": {
-                                "type": "string",
-                                "description": "The name of the agent"
-                            },
-                            "prompt_preamble": {
-                                "type": "string",
-                                "description": "The preamble for the call prompt"
-                            }
+                            "required": ["phone_number", "agent_type", "agent_name", "prompt_preamble"]
                         }
                     }
                 },
