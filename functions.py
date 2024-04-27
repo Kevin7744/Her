@@ -1,11 +1,11 @@
 from openai import OpenAI
 import json
 import datetime
-from prompts import assistant_instructions
-import os
 from supabase import create_client
 import requests
 import random
+import os
+from prompts import assistant_instructions
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 SUPABASE_URL = os.environ("SUPABASE_URL")
