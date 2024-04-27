@@ -61,7 +61,18 @@ class Her:
                             arguments = json.loads(tool_call.function.arguments)
                             output = functions.current_date_time()
                             tools_outputs.append({"tool_call_id": tool_call.id, "output": json.dumps(output)})
-                        # elif 
+                        elif tool_call.function.name == "get_transcript":
+                            arguments = json.loads(tool_call.function.arguments)
+                            output = functions.get_transcript(arguments["phone_number"])
+                            tools_outputs.append({"tool_call_id": tool_call.id, "output": json.dumps(output)})
+                        elif tool_call.function.name == "make_outbound_call":
+                            arguments = json.loads(tool_call.function.arguments)
+                            functions.make_outbound_call(arguments["phone_number"], arguments["agent_type"], arguments["agent_name"], arguments["prompt_preamble"])
+                            tools_outputs.append({"tool_call_id": tool_call.id, "output": "Outbound call initiated"})
+                        elif tool_call.function.name == "get_agent_name_and_type":
+                            arguments = json.loads(tool_call.function.arguments)
+                            agent_name, agent_type = functions.get_agent_name_and_type()
+                            tools_outputs.append({"tool_call_id": tool_call.id, "output": json.dumps({"agent_name": agent_name, "agent_type": agent_type})})
 
                 time.sleep(2)  # Wait for a second before checking again
                 

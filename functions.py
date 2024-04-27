@@ -20,8 +20,6 @@ def current_date_time():
     current_datetime = datetime.datetime.now()
     return f"The current date and time is: {current_datetime.strftime('%d/%m/%Y %H:%M')}"
 
-# todo: I will add a function later that calls an outbound calling agent API 
-# def call_outbound_agent():
 
 # Get transcript from supabase using phone number
 def get_transcript(phone_number: str) -> str:
@@ -123,7 +121,7 @@ def create_assistant(client):
                         "name": "get_agent_name_and_type",
                         "description": "Function to randomly select an agent name and type",
                         "parameters": {},
-                        "return_type": {
+                        "returns": {
                             "type": "tuple",
                             "description": "A tuple containing the selected agent name and type",
                             "items": [
