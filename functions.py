@@ -4,6 +4,8 @@ import datetime
 from prompts import assistant_instructions
 import os
 from supabase import create_client
+import requests
+import random
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 SUPABASE_URL = os.environ("SUPABASE_URL")
@@ -26,6 +28,28 @@ def get_transcript(phone_number: str) -> str:
   transcript = supabase.table("transcripts").select("transcript").eq("phone_number", phone_number).execute()
   return transcript
 
+# Function to get agent name and type
+def get_agent_name_and_type():
+    agent_names = ["Austin", "Samantha", "Emma"]
+    agent_name = random.choice(agent_names)
+    agent_type = "Censored" if random.randint(0, 1) else "Uncensored"
+    return agent_name, agent_type
+    
+
+# Function to make outbound call
+def make_outbound_call(phone_number: str, agent_type: str, agent_name: str, prompt_preamble: str):
+    url = "https://b951a587-42ec-49f6-8b2d-990b152b48d5-00-r0cij1ewiy7d.spock.replit.dev/start_outbound_call"
+    payload = {
+        "to_phone": phone_number,
+        "agent_type": agent_type,
+        "agent_name": agent_name,
+        "prompt_preamble": prompt_preamble
+    }
+    response = requests.post(url, data=payload)
+    if response.status_code == 200:
+        return "Outbound call successfully made"
+    else:
+        return f"Failed to make outbound call, status code: {response.status_code}"
 
 
 def create_assistant(client):
@@ -54,7 +78,67 @@ def create_assistant(client):
                         "description": "Function to get the current date and time",
                         "parameters": {}
                     }
-                }, 
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_transcript",
+                        "description": "Get transcript from supabase using phone number",
+                        "parameters": {
+                            "phone_number": {
+                                "type": "string",
+                                "description": "The phone number to search for in the 'transcripts' table"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "make_outbound_call",
+                        "description": "Function to make an outbound call",
+                        "parameters": {
+                            "phone_number": {
+                                "type": "string",
+                                "description": "The phone number to call"
+                            },
+                            "agent_type": {
+                                "type": "string",
+                                "description": "The type of agent to use for the call"
+                            },
+                            "agent_name": {
+                                "type": "string",
+                                "description": "The name of the agent"
+                            },
+                            "prompt_preamble": {
+                                "type": "string",
+                                "description": "The preamble for the call prompt"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_agent_name_and_type",
+                        "description": "Function to randomly select an agent name and type",
+                        "parameters": {},
+                        "return_type": {
+                            "type": "tuple",
+                            "description": "A tuple containing the selected agent name and type",
+                            "items": [
+                                {
+                                    "type": "string",
+                                    "description": "The selected agent name"
+                                },
+                                {
+                                    "type": "string",
+                                    "description": "The selected agent type"
+                                }
+                            ]
+                        }
+                    }
+                }
             ],
             file_ids=[file.id])
 
